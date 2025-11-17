@@ -44,9 +44,19 @@ def main():
             for alert in alerts:
                 a = alert["alert"]
                 body.append(
-                    f"- {a['signature']}\n"
-                    f"  Source: {alert['src_ip']}:{alert['src_port']}\n"
-                    f"  Destination: {alert['dest_ip']}:{alert['dest_port']}\n"
+                    f"- {a['signature']}"
+                )
+                if "src_port" in alert and "dest_port" in alert:
+                    body.append(
+                        f"  Source: {alert['src_ip']}:{alert['src_port']}\n"
+                        f"  Destination: {alert['dest_ip']}:{alert['dest_port']}"
+                    )
+                elif "src_ip" in alert and "dest_ip" in alert:
+                    body.append(
+                        f"  Source: {alert['src_ip']}\n"
+                        f"  Destination: {alert['dest_ip']}"
+                    )
+                body.append(
                     f"  Protocol: {alert['proto']}\n"
                     f"  Time: {alert['timestamp']}\n"
                 )
