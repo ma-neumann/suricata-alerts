@@ -14,6 +14,8 @@ def main():
 
     logging.info("Loaded enviroment variables!")
 
+    host = os.getenv("HOST")
+
     mailer_type = os.getenv("MAILER")
     username = os.getenv("USERNAME")
     password = os.getenv("PASSWORD")
@@ -37,7 +39,7 @@ def main():
             if len(alerts) == 0:
                 time.sleep(polling_time)
                 continue
-            subject = f"[Suricata Alert] {len(alerts)} New Alert(s)"
+            subject = f"[Suricata Alert - {host}] {len(alerts)} New Alert(s)"
             body = ["New Suricata alert(s) detected:\n"]
             for alert in alerts:
                 a = alert["alert"]
