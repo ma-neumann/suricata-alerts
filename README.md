@@ -36,6 +36,7 @@ It is designed for easy deployment in a Docker environment and can be customized
 | `POLLING_TIME` | Time in seconds between checks for new alerts | `10`                                |
 | `POLL_LIMIT`   | Maximum number of new alerts to send          | `20`                                |
 | `HOST`         | Name to identify your log source              | `myserver1`                         |
+| `DETAILS_URL`  | URL to see details on the new alerts          | `https://myserver1/evebox`          |
 
 ### Docker Usage
 

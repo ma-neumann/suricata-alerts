@@ -25,6 +25,7 @@ def main():
     port = int(os.getenv("PORT"))
     polling_time = int(os.getenv("POLLING_TIME"))
     poll_limit = int(os.getenv("POLL_LIMIT"))
+    details_url = os.getenv("DETAILS_URL")
 
     logging.info("Setting up mailer...")
 
@@ -70,6 +71,9 @@ def main():
                     f"  Time: {alert['timestamp']}\n"
                 )
                 logging.info(f"ALERT: {alert['alert']['signature']}")
+            body.append(
+                f"For details please see: {details_url}"
+            )
             for to_email in to_emails:
                 mailer.send_message(from_email, to_email, subject, "\n".join(body))
             time.sleep(polling_time)
