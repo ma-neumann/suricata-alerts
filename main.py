@@ -24,6 +24,7 @@ def main():
     smtp_server = os.getenv("SMTP_SERVER")
     port = int(os.getenv("PORT"))
     polling_time = int(os.getenv("POLLING_TIME"))
+    poll_limit = int(os.getenv("POLL_LIMIT"))
 
     logging.info("Setting up mailer...")
 
@@ -41,7 +42,15 @@ def main():
                 continue
             subject = f"[Suricata Alert - {host}] {len(alerts)} New Alert(s)"
             body = ["New Suricata alert(s) detected:\n"]
+            poll_count = 0
             for alert in alerts:
+                if poll_count >= poll_limit:
+                    poll_suppressed = len(alerts) - poll_count
+                    body.append(
+                        f"Note: additional {poll_suppressed} alerts suppressed\n"
+                    )
+                    break
+                poll_count += 1
                 a = alert["alert"]
                 body.append(
                     f"- {a['signature']}"

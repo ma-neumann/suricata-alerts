@@ -34,6 +34,7 @@ It is designed for easy deployment in a Docker environment and can be customized
 | `SMTP_SERVER`  | SMTP server address                           | `smtp.mailserver.com`               |
 | `PORT`         | SMTP server port                              | `587`                               |
 | `POLLING_TIME` | Time in seconds between checks for new alerts | `10`                                |
+| `POLL_LIMIT`   | Maximum number of new alerts to send          | `20`                                |
 | `HOST`         | Name to identify your log source              | `myserver1`                         |
 
 ### Docker Usage
@@ -58,6 +59,7 @@ It is designed for easy deployment in a Docker environment and can be customized
       - SMTP_SERVER=smtp.zeptomail.com
       - PORT=587
       - POLLING_TIME=60
+      - POLL_LIMIT=20
       - HOST=myserver1
 ```
 
