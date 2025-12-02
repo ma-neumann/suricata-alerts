@@ -1,23 +1,25 @@
 import json
 import os
+import re
 
 class SuricataAlertReader:
-    def __init__(self, eve_path="/logs/eve.json"):
-        self.eve_path = eve_path
+    def __init__(self, eve_path, skip_pattern):
+        self._eve_path = eve_path
+        self._skip_re = re.compile(skip_pattern)
         self._file = None
         self._inode = 0
         self._position = 0
 
     def _open_file(self):
-        if not os.path.exists(self.eve_path):
-            raise FileNotFoundError(f"EVE log not found at: {self.eve_path}")
-        self._file = open(self.eve_path, "r", encoding="utf-8")
+        if not os.path.exists(self._eve_path):
+            raise FileNotFoundError(f"EVE log not found at: {self._eve_path}")
+        self._file = open(self._eve_path, "r", encoding="utf-8")
         self._file.seek(self._position)
-        self._inode = os.stat(self.eve_path).st_ino
+        self._inode = os.stat(self._eve_path).st_ino
 
     def _rotated(self):
         try:
-            if os.stat(self.eve_path).st_ino != self._inode:
+            if os.stat(self._eve_path).st_ino != self._inode:
                 return True
         except FileNotFoundError:
             return False
@@ -42,6 +44,8 @@ class SuricataAlertReader:
             try:
                 event = json.loads(line)
                 if event["event_type"] == "alert":
+                    if self._skip_re.match(event["alert"]["signature"]):
+                        continue
                     new_alerts.append(event)
             except json.JSONDecodeError:
                 continue

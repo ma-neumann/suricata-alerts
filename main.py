@@ -12,7 +12,7 @@ def main():
 
     load_dotenv()
 
-    logging.info("Loaded enviroment variables!")
+    logging.info("Loaded environment variables!")
 
     host = os.getenv("HOST")
 
@@ -26,14 +26,15 @@ def main():
     polling_time = int(os.getenv("POLLING_TIME"))
     poll_limit = int(os.getenv("POLL_LIMIT"))
     details_url = os.getenv("DETAILS_URL")
+    skip_pattern = os.getenv("SKIP_PATTERN")
 
     logging.info("Setting up mailer...")
 
     mailer = Mailer(mailer_type,port,smtp_server, username, password)
 
-    logging.info("Setup mailer successfuly!")
+    logging.info("Setup mailer successfully!")
 
-    reader = SuricataAlertReader("/logs/eve.json")
+    reader = SuricataAlertReader("/logs/eve.json", skip_pattern)
 
     try:
         while True:
@@ -41,7 +42,7 @@ def main():
             if len(alerts) == 0:
                 time.sleep(polling_time)
                 continue
-            subject = f"[Suricata Alert - {host}] {len(alerts)} New Alert(s)"
+            subject = f"[Suricata alert - {host}] {len(alerts)} new alert(s)"
             body = ["New Suricata alert(s) detected:\n"]
             poll_count = 0
             for alert in alerts:
