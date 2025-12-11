@@ -37,7 +37,7 @@ It is designed for easy deployment in a Docker environment and can be customized
 | `POLL_LIMIT`   | Maximum number of new alerts to send          | `20`                                |
 | `HOST`         | Name to identify your log source              | `myserver1`                         |
 | `DETAILS_URL`  | URL to see details on the new alerts          | `https://myserver1/evebox`          |
-| `SKIP_PATTERN` | Regex to match alert signatures not to send   | `ET (SCAN\|HUNTING\|DROP\|CINS)`       |
+| `SKIP_PATTERN` | Regex to match alert signatures not to send   | `(ET|GPL) (SCAN\|HUNTING\|DROP\|CINS)` |
 
 ### Docker Usage
 
@@ -64,7 +64,7 @@ It is designed for easy deployment in a Docker environment and can be customized
       - POLL_LIMIT=20
       - HOST=myserver1
       - DETAILS_URL=https://myserver1/evebox
-      - SKIP_PATTERN=ET (SCAN|HUNTING|DROP|CINS)
+      - SKIP_PATTERN=(ET|GPL) (SCAN|HUNTING|DROP|CINS)
 ```
 
 ### Example Alert Email
