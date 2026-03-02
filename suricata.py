@@ -19,7 +19,7 @@ class SuricataAlertReader:
         self._file.seek(self._position)
         self._inode = os.stat(self._eve_path).st_ino
 
-    def _rotated(self):
+    def _replaced(self):
         try:
             if os.stat(self._eve_path).st_ino != self._inode:
                 return True
@@ -30,7 +30,7 @@ class SuricataAlertReader:
     def get_new_alerts(self):
         if self._file is None:
             self._open_file()
-        elif self._rotated():
+        elif self._replaced():
             self._file.close()
             self._file = None
             self._position = 0
