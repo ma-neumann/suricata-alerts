@@ -5,7 +5,9 @@ import re
 class SuricataAlertReader:
     def __init__(self, eve_path, skip_pattern):
         self._eve_path = eve_path
-        self._skip_re = re.compile(skip_pattern)
+        self._skip_re = None
+        if skip_pattern is not None:
+            self._skip_re = re.compile(skip_pattern)
         self._file = None
         self._inode = 0
         self._position = 0
@@ -44,7 +46,7 @@ class SuricataAlertReader:
             try:
                 event = json.loads(line)
                 if event["event_type"] == "alert":
-                    if self._skip_re.match(event["alert"]["signature"]):
+                    if self._skip_re is not None and self._skip_re.match(event["alert"]["signature"]):
                         continue
                     new_alerts.append(event)
             except json.JSONDecodeError:

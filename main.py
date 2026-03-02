@@ -24,7 +24,7 @@ def main():
     smtp_server = os.getenv("SMTP_SERVER")
     port = int(os.getenv("PORT"))
     polling_time = int(os.getenv("POLLING_TIME"))
-    poll_limit = int(os.getenv("POLL_LIMIT"))
+    poll_limit = int(os.getenv("POLL_LIMIT", "-1"))
     details_url = os.getenv("DETAILS_URL")
     skip_pattern = os.getenv("SKIP_PATTERN")
 
@@ -42,11 +42,14 @@ def main():
             if len(alerts) == 0:
                 time.sleep(polling_time)
                 continue
-            subject = f"[Suricata alert - {host}] {len(alerts)} new alert(s)"
+            subject = f"[Suricata alert"
+            if host is not None:
+                subject += f" - {host}"
+            subject += f"] {len(alerts)} new alert(s)"
             body = ["New Suricata alert(s) detected:\n"]
             poll_count = 0
             for alert in alerts:
-                if poll_count >= poll_limit:
+                if poll_limit > -1 and poll_count >= poll_limit:
                     poll_suppressed = len(alerts) - poll_count
                     body.append(
                         f"Note: additional {poll_suppressed} alerts suppressed\n"
@@ -72,9 +75,10 @@ def main():
                     f"  Time: {alert['timestamp']}\n"
                 )
                 logging.info(f"ALERT: {alert['alert']['signature']}")
-            body.append(
-                f"For details please see: {details_url}"
-            )
+            if details_url is not None:
+                body.append(
+                    f"For details please see: {details_url}"
+                )
             for to_email in to_emails:
                 mailer.send_message(from_email, to_email, subject, "\n".join(body))
             time.sleep(polling_time)
